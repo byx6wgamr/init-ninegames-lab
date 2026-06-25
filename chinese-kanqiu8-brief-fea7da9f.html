@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>看球吧 · 赛事信息快速索引</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+    body {
+      background: #f3f5f7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 1100px;
+      width: 100%;
+    }
+    /* header / hero 简约但自然 */
+    .hero {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 2.8rem 2.5rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.02);
+      border: 1px solid #eaeef0;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: #1a262b;
+      margin-bottom: 0.5rem;
+    }
+    .hero .badge {
+      display: inline-block;
+      background: #e6edf1;
+      color: #2f454e;
+      padding: 0.2rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 1.5rem;
+      border: 1px solid #d6e0e5;
+    }
+    .hero p {
+      max-width: 680px;
+      margin: 0 auto;
+      color: #3c4f58;
+      line-height: 1.6;
+      font-size: 1.05rem;
+    }
+    .hero p a {
+      color: #1e3f4a;
+      text-decoration: none;
+      font-weight: 550;
+      border-bottom: 1px solid #bcccd4;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .hero p a:hover {
+      border-bottom-color: #1e3f4a;
+      color: #0b252e;
+    }
+    /* 卡片网格 — 目录感布局 */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 1.6rem 1.5rem;
+      border: 1px solid #e4ebef;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.02);
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .card:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+      transform: translateY(-2px);
+      border-color: #d2dde4;
+    }
+    .card h3 {
+      font-size: 1.2rem;
+      font-weight: 540;
+      color: #1b2e36;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.55rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .card h3 .num {
+      display: inline-flex;
+      background: #eaf0f4;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.05rem 0.75rem;
+      color: #2a424d;
+      border: 1px solid #d0dce3;
+      margin-left: 0.2rem;
+    }
+    .card p, .card li {
+      color: #3d535d;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0.3rem 0 0;
+    }
+    .card ul li {
+      padding: 0.2rem 0 0.2rem 1.1rem;
+      position: relative;
+    }
+    .card ul li::before {
+      content: "·";
+      position: absolute;
+      left: 0.2rem;
+      color: #7a959f;
+      font-weight: 600;
+    }
+    .tag {
+      display: inline-block;
+      background: #eef5fa;
+      border-radius: 6px;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.7rem;
+      color: #2b4956;
+      border: 1px solid #d4e0e8;
+      margin-right: 0.3rem;
+      margin-top: 0.3rem;
+      letter-spacing: 0.2px;
+    }
+    /* 说明区 + 提示区合并为宽卡片 */
+    .info-panel {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 1.8rem 2rem;
+      border: 1px solid #e2e9ee;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .info-panel .col {
+      flex: 1 1 240px;
+    }
+    .info-panel .col h4 {
+      font-weight: 540;
+      font-size: 1rem;
+      color: #1b2e36;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid #dee8ed;
+    }
+    .info-panel .col p, .info-panel .col li {
+      color: #3a4f59;
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+    .info-panel .col ul {
+      padding-left: 1rem;
+      list-style: square;
+      color: #3a4f59;
+    }
+    .info-panel .col ul li {
+      margin-bottom: 0.2rem;
+    }
+    .highlight-link {
+      font-weight: 500;
+      color: #1e3f4a;
+    }
+    .highlight-link a {
+      color: #1a3942;
+      text-decoration: none;
+      border-bottom: 1px solid #b7cad3;
+      transition: border 0.15s;
+    }
+    .highlight-link a:hover {
+      border-bottom: 1px solid #1a3942;
+    }
+    /* faq 摘要 */
+    .faq-summary {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      border: 1px solid #e2e9ee;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      margin-bottom: 1.5rem;
+    }
+    .faq-summary details {
+      margin-bottom: 0.6rem;
+      border-bottom: 1px solid #edf2f6;
+      padding-bottom: 0.5rem;
+    }
+    .faq-summary details[open] {
+      padding-bottom: 0.8rem;
+    }
+    .faq-summary summary {
+      font-weight: 500;
+      color: #1c313a;
+      cursor: pointer;
+      font-size: 0.98rem;
+      padding: 0.2rem 0;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .faq-summary summary::before {
+      content: "▸";
+      color: #7d9ba7;
+      font-size: 1rem;
+      transition: transform 0.15s;
+    }
+    .faq-summary details[open] summary::before {
+      content: "▾";
+    }
+    .faq-summary .answer {
+      color: #3e5661;
+      font-size: 0.9rem;
+      padding: 0.4rem 0 0.2rem 1.2rem;
+      line-height: 1.6;
+    }
+    .faq-summary .answer a {
+      color: #1e3f4a;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: #b7cad3;
+    }
+    .faq-summary .answer a:hover {
+      text-decoration-color: #1a3942;
+    }
+    .footnote {
+      text-align: center;
+      color: #637a85;
+      font-size: 0.8rem;
+      border-top: 1px solid #dde5ea;
+      padding-top: 1.8rem;
+      margin-top: 0.3rem;
+    }
+    .footnote a {
+      color: #3f5d69;
+      text-decoration: none;
+      border-bottom: 1px solid #cbd8e0;
+    }
+    .footnote a:hover {
+      border-bottom-color: #3f5d69;
+    }
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .hero {
+        padding: 2rem 1.2rem;
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+      .info-panel {
+        padding: 1.5rem 1.2rem;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .faq-summary {
+        padding: 1.2rem 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- hero 简洁说明：从用户快速识别用途切入 -->
+  <div class="hero">
+    <div class="badge">⚽ 赛事信息知识库 · 轻索引</div>
+    <h1>看球吧 · 一眼找到方向</h1>
+    <p>
+      如果你常看球聊球，需要快速判断一个网站是否对口、能提供什么信息——<br>
+      这里直接把 <a href="https://chinese-kanqiu8.com">看球吧</a> 的常见用途拆成卡片索引，省去自己翻找的功夫。<br>
+      页面更像一张“信息导览图”，每块内容都对应真实使用场景。
+    </p>
+  </div>
+
+  <!-- 卡片网格：目录感 + 特点 + 场景 -->
+  <div class="card-grid">
+    <div class="card">
+      <h3>📋 站点速览 <span class="num">01</span></h3>
+      <p>一个围绕足球及主流体育赛事提供赛程、积分、动态追踪的中文平台。核心信息集中在联赛、杯赛及即时战报，适合赛前瞄一眼、赛后看总结。</p>
+      <div style="margin-top: 0.6rem;">
+        <span class="tag">赛程</span>
+        <span class="tag">积分榜</span>
+        <span class="tag">战报</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🧭 常用板块 <span class="num">02</span></h3>
+      <ul>
+        <li>五大联赛&nbsp;·&nbsp;实时对阵</li>
+        <li>欧冠 / 欧联 淘汰赛数据</li>
+        <li>国家队比赛日 &amp; 亚洲赛事</li>
+        <li>球队阵容 &amp; 转会摘要</li>
+      </ul>
+      <p style="margin-top: 0.4rem; font-size: 0.88rem; color: #4a636f;">每个板块结构清晰，无冗余干扰。</p>
+    </div>
+    <div class="card">
+      <h3>🧩 信息特点 <span class="num">03</span></h3>
+      <p>内容偏重比赛本身，非粉丝向社区。页面以列表、表格、短讯为主，适合快速扫读。如果你找的是深度战术分析或长篇专栏，可能不是这里的主打；但对于比赛日基础信息，覆盖比较周全。</p>
+    </div>
+    <div class="card">
+      <h3>⚡ 典型使用场景 <span class="num">04</span></h3>
+      <ul>
+        <li>周末前查看下一轮焦点战时间</li>
+        <li>赛后确认比分、进球和红黄牌</li>
+        <li>跟踪联赛积分变化</li>
+        <li>快速了解球队近期战绩</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 说明区 + 提示区（合并） -->
+  <div class="info-panel">
+    <div class="col">
+      <h4>📌 使用说明</h4>
+      <p>访问 <a href="https://chinese-kanqiu8.com" style="color:#1e3f4a; text-decoration: underline; text-underline-offset:2px;">看球吧</a> 后，首页即展示当日及未来一周重点赛事。点击任意比赛可查看详细对阵、历史交锋及即时数据。所有内容无需注册即可浏览，部分模块提供筛选排序。</p>
+      <p style="margin-top: 0.4rem;">建议搭配浏览器翻译功能使用（网站主要为中文界面，部分外链或球员名会保留原文）。</p>
+    </div>
+    <div class="col">
+      <h4>💡 提示点</h4>
+      <ul>
+        <li>赛程时间默认为北京时间，页面会有明显时区标注</li>
+        <li>积分榜每周更新，数据源与实时比分联动</li>
+        <li>移动端适配良好，横屏纵览效果更佳</li>
+        <li>如果找不到某支小众球队，可尝试站内搜索关键词</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FAQ 摘要区 -->
+  <div class="faq-summary">
+    <details>
+      <summary>看球吧 主要覆盖哪些联赛？</summary>
+      <div class="answer">英超、西甲、德甲、意甲、法甲、欧冠、欧联、欧协联，以及世界杯、欧洲杯、亚洲杯等国家队赛事。部分二级联赛（如英冠、西乙）也有赛果更新，但详细程度可能不及顶级联赛。</div>
+    </details>
+    <details>
+      <summary>页面上的数据是实时更新的吗？</summary>
+      <div class="answer">比赛进行中会滚动更新比分、控球率、射门等基础统计。赛后约 10–15 分钟生成完整技术统计。如有延迟，通常不超过 2 分钟。你可以随时刷新页面获取最新状态。</div>
+    </details>
+    <details>
+      <summary>如何快速找到自己关注球队的赛程？</summary>
+      <div class="answer">在首页顶部导航栏点击「赛程」进入日历视图，或直接使用搜索框输入球队名称。此外，<a href="https://chinese-kanqiu8.com">看球吧</a> 的「球队」页面会列出所有热门俱乐部，点进去就能看到该队近 10 场与未来赛程。</div>
+    </details>
+    <details>
+      <summary>需要注册账号才能使用全部功能吗？</summary>
+      <div class="answer">浏览赛程、比分、积分榜都不需要注册。只有收藏球队、自定义提醒之类的个性化功能可能需要简易登录。绝大部分日常看球查询场景都是完全开放的。</div>
+    </details>
+  </div>
+
+  <!-- 相关信息区 -->
+  <div style="background: #ffffff; border-radius: 16px; padding: 1.2rem 2rem; border: 1px solid #e2e9ee; box-shadow: 0 2px 6px rgba(0,0,0,0.02); margin-bottom: 2rem;">
+    <p style="color: #2b4754; font-size: 0.95rem;">
+      <span style="font-weight: 500;">相关信息：</span> 网站定位为赛事信息聚合，不包含博彩、赌球或非法直播内容，纯粹围绕体育数据与资讯。如果有任何疑问或发现数据异常，可以站内反馈渠道建议更新。
+    </p>
+  </div>
+
+  <!-- 页脚 + 纯净链接（可见文本严格为"看球吧"） -->
+  <div class="footnote">
+    <p>内容索引基于对 <a href="https://chinese-kanqiu8.com">看球吧</a> 的实际使用体验整理，旨在帮助新访客快速熟悉用途。<br>页面仅为信息说明，不收集任何数据，不构成推荐或背书。</p>
+  </div>
+</div>
+</body>
+</html>
